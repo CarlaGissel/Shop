@@ -1,0 +1,12 @@
+# IDE
+.idea/
+.vscode/
+
+# Frontend
+shop-frontend/node_modules/
+shop-frontend/dist/
+shop-frontend/dist-ssr/
+shop-frontend/.env
+
+# Logs
+*.log
