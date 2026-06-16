@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext'
+import { formatGs } from '../utils/format'
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart()
@@ -34,7 +35,7 @@ export default function ProductCard({ product }) {
         )}
         <h3 className="text-sm font-semibold text-black leading-snug">{product.name}</h3>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-sm font-bold text-black">${parseFloat(product.price).toFixed(2)}</span>
+          <span className="text-sm font-bold text-black">{formatGs(product.price)}</span>
           {product.stock > 0 && (
             <span className="text-xs text-gray-400">Stock: {product.stock}</span>
           )}

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../api/axios'
 import Spinner from '../components/Spinner'
+import { formatGs as fmtPrice } from '../utils/format'
 
 const STATUS_LABELS = {
   pending: 'Pendiente',
@@ -11,7 +12,6 @@ const STATUS_LABELS = {
   cancelled: 'Cancelado',
 }
 
-const fmtPrice = v => `$${parseFloat(v).toFixed(2)}`
 const fmtDate = v => new Date(v).toLocaleDateString('es-PY', { day: '2-digit', month: 'short', year: 'numeric' })
 
 export default function Orders() {

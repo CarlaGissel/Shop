@@ -1,6 +1,7 @@
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { formatGs } from '../utils/format'
 
 export default function CartDrawer() {
   const { items, removeItem, updateQty, total, open, setOpen } = useCart()
@@ -42,7 +43,7 @@ export default function CartDrawer() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-800 truncate">{item.name}</p>
-                <p className="text-sm text-indigo-600 font-semibold mt-0.5">${parseFloat(item.price).toFixed(2)}</p>
+                <p className="text-sm text-indigo-600 font-semibold mt-0.5">{formatGs(item.price)}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <button onClick={() => updateQty(item.id, item.quantity - 1)}
                     className="w-7 h-7 rounded-lg border border-gray-200 text-sm flex items-center justify-center hover:bg-gray-50">−</button>
@@ -62,7 +63,7 @@ export default function CartDrawer() {
           <div className="px-5 py-4 border-t border-gray-200 space-y-4 bg-white">
             <div className="flex justify-between items-center">
               <span className="text-xs uppercase tracking-widest text-gray-500">Subtotal:</span>
-              <span className="text-lg font-bold text-black">${total.toFixed(2)}</span>
+              <span className="text-lg font-bold text-black">{formatGs(total)}</span>
             </div>
             <button onClick={handleCheckout}
               className="w-full bg-black hover:bg-gray-800 text-white py-3.5 text-xs font-semibold uppercase tracking-widest transition-colors">
