@@ -115,6 +115,84 @@ Abrí **http://localhost:5173** en el navegador.
 
 ---
 
+## 🐳 Ejecución con Docker
+
+El proyecto está contenerizado con **Docker** y orquestado con **Docker Compose**. Se
+levantan tres contenedores: base de datos (PostgreSQL), API (Laravel) y frontend (nginx).
+
+### Construir las imágenes
+```bash
+docker compose build
+```
+
+### Ejecutar los contenedores
+```bash
+docker compose up -d
+```
+
+Esto levanta:
+- **Frontend** → http://localhost:5173
+- **API** → http://localhost:8000
+- **PostgreSQL** → puerto interno 5432
+
+El contenedor del backend espera a la base de datos, ejecuta las migraciones con datos de
+ejemplo y arranca solo. Para detener todo:
+
+```bash
+docker compose down
+```
+
+> **Capturas (agregar):**
+> - [ ] Construcción de la imagen (`docker compose build`)
+> - [ ] Contenedores en ejecución (`docker compose ps` o `docker ps`)
+> - [ ] App funcionando en el navegador
+
+---
+
+## ⚙️ Automatización con scripts
+
+Hay scripts que automatizan el flujo completo: `git add` → `commit` → `push` →
+`docker build` → `docker up`.
+
+| Sistema | Script | Uso |
+|---------|--------|-----|
+| Windows | `deploy.bat` | `deploy.bat` (doble click o desde la terminal) |
+| Linux / macOS | `deploy.sh` | `chmod +x deploy.sh && ./deploy.sh` |
+
+Ambos piden un mensaje de commit y ejecutan todos los pasos en orden.
+
+---
+
+## ⏰ Automatización programada (Plan B)
+
+Como alternativa, el script de despliegue puede ejecutarse de forma programada.
+
+### Windows — Programador de tareas
+1. Abrí **Programador de tareas** → **Crear tarea básica**.
+2. Definí el **desencadenador** (por ejemplo, diario a una hora fija).
+3. En **Acción**, elegí *Iniciar un programa* e indicá la ruta de `deploy.bat`.
+4. Guardá la tarea.
+
+### Linux — Crontab
+```bash
+crontab -e
+# Ejecutar el script todos los días a las 02:00 AM:
+0 2 * * * /ruta/al/proyecto/deploy.sh >> /ruta/al/proyecto/deploy.log 2>&1
+```
+
+> **Capturas (agregar):**
+> - [ ] Tarea creada en el Programador de tareas / salida de `crontab -l`
+
+---
+
+## ☁️ Despliegue en la nube
+
+🔗 **Aplicación desplegada:** _(completar con el enlace una vez publicado)_
+
+> **Capturas (agregar):** panel del servicio cloud + app funcionando en la URL pública.
+
+---
+
 ## 👤 Usuarios de prueba
 
 El seeder crea dos cuentas:
