@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
+/* Tailwind v4 ya resetea margin/padding en su capa base (preflight).
+   No reseteamos margin/padding fuera de @layer: las reglas sin capa
+   le ganan a @layer utilities y pisarían px-*, py-*, pl-*, etc. */
 *, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
 html, body {

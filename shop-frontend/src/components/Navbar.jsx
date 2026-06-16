@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 
 const navLinks = [
   { label: 'Todos', to: '/' },
-  { label: 'Novedades', to: '/?q=novedades' },
-  { label: 'Hombre', to: '/?cat=hombre' },
-  { label: 'Mujer', to: '/?cat=mujer' },
+  { label: 'Novedades', to: '/?sort=newest' },
+  { label: 'Hombre', to: '/?gender=hombre' },
+  { label: 'Mujer', to: '/?gender=mujer' },
   { label: 'Accesorios', to: '/?cat=accesorios' },
 ]
 
@@ -16,8 +16,21 @@ export default function Navbar() {
   const { count, setOpen } = useCart()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+
+  // Cerrar el menú de cuenta al hacer click fuera
+  useEffect(() => {
+    if (!menuOpen) return
+    const handler = e => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [menuOpen])
 
   const handleLogout = async () => {
+    setMenuOpen(false)
     await logout()
     navigate('/login')
   }
@@ -90,24 +103,59 @@ export default function Navbar() {
             {/* Separator */}
             <div className="w-px h-6 bg-gray-200 mx-1 hidden lg:block" />
 
-            {/* User icon */}
+            {/* Account dropdown */}
             {user ? (
-              <div className="flex items-center">
+              <div className="relative" ref={menuRef}>
                 <button
-                  onClick={() => isAdmin ? navigate('/admin') : null}
+                  onClick={() => setMenuOpen(o => !o)}
                   title={user.name}
-                  className="p-2 text-gray-600 hover:text-black transition-colors"
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen}
+                  className="p-2 text-gray-600 hover:text-black transition-colors cursor-pointer flex items-center"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </button>
-                <button onClick={handleLogout} title="Cerrar sesión"
-                  className="p-2 text-gray-400 hover:text-black transition-colors">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3-3l-3 3m0 0l3 3m-3-3H21" />
-                  </svg>
-                </button>
+
+                {menuOpen && (
+                  <div
+                    className="absolute right-0 bg-white border border-gray-200 shadow-lg overflow-hidden"
+                    style={{ top: 'calc(100% + 8px)', width: '224px', zIndex: 50 }}
+                  >
+                    {/* Encabezado: nombre + email */}
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-black truncate">{user.name}</p>
+                      {user.email && <p className="text-xs text-gray-400 truncate">{user.email}</p>}
+                    </div>
+
+                    {/* Opciones */}
+                    <nav className="py-1">
+                      <Link to="/cuenta" onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors">
+                        Mi cuenta
+                      </Link>
+                      <Link to="/pedidos" onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors">
+                        Mis pedidos
+                      </Link>
+                      {isAdmin && (
+                        <Link to="/admin" onClick={() => setMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm font-semibold text-amber-600 hover:bg-amber-50 transition-colors">
+                          Panel admin
+                        </Link>
+                      )}
+                    </nav>
+
+                    {/* Cerrar sesión */}
+                    <div className="border-t border-gray-100 py-1">
+                      <button onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black transition-colors cursor-pointer">
+                        Cerrar sesión
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Link to="/login" title="Iniciar sesión"

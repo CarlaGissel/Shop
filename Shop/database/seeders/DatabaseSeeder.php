@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         collect([
             [
                 'category_id' => $categories['camisetas']->id,
+                'gender' => 'mujer',
                 'name' => 'Camiseta Essential Blanca',
                 'slug' => 'camiseta-essential-blanca',
                 'description' => 'Camiseta de algodon suave con corte regular.',
@@ -57,6 +58,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_id' => $categories['pantalones']->id,
+                'gender' => 'hombre',
                 'name' => 'Jean Recto Azul',
                 'slug' => 'jean-recto-azul',
                 'description' => 'Jean clasico de tiro medio con lavado azul.',
@@ -68,6 +70,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_id' => $categories['abrigos']->id,
+                'gender' => 'unisex',
                 'name' => 'Hoodie Urbano Gris',
                 'slug' => 'hoodie-urbano-gris',
                 'description' => 'Buzo con capucha, bolsillo frontal y interior afelpado.',
@@ -79,6 +82,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_id' => $categories['accesorios']->id,
+                'gender' => 'unisex',
                 'name' => 'Gorra Minimal Negra',
                 'slug' => 'gorra-minimal-negra',
                 'description' => 'Gorra ajustable de algodon con logo discreto.',

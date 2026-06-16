@@ -12,7 +12,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState(() => searchParams.get('q') || '')
   const [category, setCategory] = useState(() => searchParams.get('cat') || '')
-  const [sort, setSort] = useState('newest')
+  const [gender, setGender] = useState(() => searchParams.get('gender') || '')
+  const [sort, setSort] = useState(() => searchParams.get('sort') || 'newest')
   const [page, setPage] = useState(1)
   const [meta, setMeta] = useState(null)
 
@@ -20,12 +21,24 @@ export default function Home() {
     api.get('/categories').then(({ data }) => setCategories(data.data))
   }, [])
 
+  // Sincronizar los filtros con la URL: al navegar (links del navbar o
+  // buscador del header) la query cambia pero el componente sigue montado,
+  // así que hay que reflejar ?q= y ?cat= en el estado para volver a filtrar.
+  useEffect(() => {
+    setSearch(searchParams.get('q') || '')
+    setCategory(searchParams.get('cat') || '')
+    setGender(searchParams.get('gender') || '')
+    setSort(searchParams.get('sort') || 'newest')
+    setPage(1)
+  }, [searchParams])
+
   const fetchProducts = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({ page })
       if (search) params.set('search', search)
       if (category) params.set('category', category)
+      if (gender) params.set('gender', gender)
       if (sort) params.set('sort', sort)
       const { data } = await api.get(`/products?${params}`)
       setProducts(data.data)
@@ -33,7 +46,7 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [search, category, sort, page])
+  }, [search, category, gender, sort, page])
 
   useEffect(() => {
     const t = setTimeout(fetchProducts, 300)

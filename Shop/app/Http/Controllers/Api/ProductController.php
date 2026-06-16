@@ -14,6 +14,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'category' => ['nullable', 'string', 'exists:categories,slug'],
+            'gender' => ['nullable', 'in:hombre,mujer'],
             'search' => ['nullable', 'string', 'max:120'],
             'sort' => ['nullable', 'in:newest,price_asc,price_desc'],
         ]);
@@ -22,6 +23,8 @@ class ProductController extends Controller
             ->with('category:id,name,slug')
             ->where('is_active', true)
             ->when($data['category'] ?? null, fn ($query, $slug) => $query->whereRelation('category', 'slug', $slug))
+            // Una sección de género incluye las prendas unisex.
+            ->when($data['gender'] ?? null, fn ($query, $gender) => $query->whereIn('gender', [$gender, 'unisex']))
             ->when($data['search'] ?? null, fn ($query, $search) => $query->where('name', 'like', "%{$search}%"))
             ->when(($data['sort'] ?? 'newest') === 'price_asc', fn ($query) => $query->orderBy('price'))
             ->when(($data['sort'] ?? 'newest') === 'price_desc', fn ($query) => $query->orderByDesc('price'))
@@ -54,6 +57,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'category_id'  => ['required', 'integer', 'exists:categories,id'],
+            'gender'       => ['required', 'in:hombre,mujer,unisex'],
             'name'         => ['required', 'string', 'max:255'],
             'description'  => ['nullable', 'string'],
             'price'        => ['required', 'numeric', 'min:0'],
@@ -73,6 +77,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'category_id'  => ['sometimes', 'integer', 'exists:categories,id'],
+            'gender'       => ['sometimes', 'in:hombre,mujer,unisex'],
             'name'         => ['sometimes', 'string', 'max:255'],
             'description'  => ['nullable', 'string'],
             'price'        => ['sometimes', 'numeric', 'min:0'],
