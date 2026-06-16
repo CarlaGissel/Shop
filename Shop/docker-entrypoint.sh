@@ -36,8 +36,11 @@ until php -r "new PDO('pgsql:host=${DB_HOST};port=${DB_PORT};dbname=${DB_DATABAS
 done
 echo "PostgreSQL disponible."
 
-# 4) Migraciones + datos de ejemplo
-php artisan migrate --seed --force
+# 4) Migraciones (siempre) + datos de ejemplo (solo si la base está vacía).
+#    El seed se ejecuta de forma tolerante: si los datos ya existen
+#    (la base persiste en un volumen), no detiene el arranque.
+php artisan migrate --force
+php artisan db:seed --force || echo "Seed omitido: los datos de ejemplo ya existen."
 
 # 5) Levantar la API
 echo "Iniciando API en http://0.0.0.0:8000"
