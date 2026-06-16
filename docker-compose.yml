@@ -1,0 +1,47 @@
+# Orquestación de la tienda completa: base de datos + API + frontend
+services:
+  # --- Base de datos PostgreSQL ---
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: shop
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # --- API Laravel ---
+  backend:
+    build: ./Shop
+    environment:
+      APP_NAME: "Clothing Shop API"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: shop
+      DB_USERNAME: shop
+      DB_PASSWORD: secret
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --- Frontend React (servido por nginx) ---
+  frontend:
+    build: ./shop-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  dbdata:
