@@ -3,8 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
-
-const fmt = v => `$${parseFloat(v).toFixed(2)}`
+import { formatGs as fmt } from '../utils/format'
 
 export default function Checkout() {
   const { items, total, clear } = useCart()
