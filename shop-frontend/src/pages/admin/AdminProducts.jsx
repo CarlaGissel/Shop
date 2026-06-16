@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../../api/axios'
 import Spinner from '../../components/Spinner'
 
-const empty = { category_id: '', name: '', description: '', price: '', stock: '', image_url: '', is_active: true }
+const empty = { category_id: '', gender: 'unisex', name: '', description: '', price: '', stock: '', image_url: '', is_active: true }
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([])
@@ -174,6 +174,15 @@ export default function AdminProducts() {
                     <select value={form.is_active} onChange={e => setForm({ ...form, is_active: e.target.value === 'true' })} className={inputCls}>
                       <option value="true">Activo</option>
                       <option value="false">Inactivo</option>
+                    </select>
+                  )}
+                </div>
+                <div className="col-span-2">
+                  {field('Sección / Género',
+                    <select value={form.gender} onChange={e => setForm({ ...form, gender: e.target.value })} required className={inputCls}>
+                      <option value="unisex">Unisex (aparece en Hombre y Mujer)</option>
+                      <option value="hombre">Hombre</option>
+                      <option value="mujer">Mujer</option>
                     </select>
                   )}
                 </div>

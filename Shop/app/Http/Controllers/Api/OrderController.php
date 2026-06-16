@@ -104,12 +104,12 @@ class OrderController extends Controller
 
     public function adminIndex(): JsonResponse
     {
-        return response()->json([
-            'data' => Order::query()
-                ->with(['items', 'user:id,name,email'])
-                ->latest()
-                ->paginate(20),
-        ]);
+        $orders = Order::query()
+            ->with(['items', 'user:id,name,email'])
+            ->latest()
+            ->paginate(20);
+
+        return response()->json($orders);
     }
 
     public function updateStatus(Request $request, Order $order): JsonResponse

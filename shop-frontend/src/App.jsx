@@ -7,6 +7,9 @@ import CartDrawer from './components/CartDrawer'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Account from './pages/Account'
+import Orders from './pages/Orders'
+import Checkout from './pages/Checkout'
 import AdminLayout from './pages/admin/AdminLayout'
 import Dashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/AdminProducts'
@@ -27,6 +30,15 @@ function AppShell() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/cuenta" element={
+          <ProtectedRoute><Account /></ProtectedRoute>
+        } />
+        <Route path="/pedidos" element={
+          <ProtectedRoute><Orders /></ProtectedRoute>
+        } />
+        <Route path="/checkout" element={
+          <ProtectedRoute><Checkout /></ProtectedRoute>
+        } />
         <Route path="/admin" element={
           <ProtectedRoute adminOnly>
             <AdminLayout />

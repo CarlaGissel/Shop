@@ -8,8 +8,8 @@ export default function CartDrawer() {
   const navigate = useNavigate()
 
   const handleCheckout = () => {
-    if (!user) { navigate('/login'); setOpen(false); return }
-    alert('Pago próximamente.')
+    setOpen(false)
+    navigate(user ? '/checkout' : '/login')
   }
 
   if (!open) return null

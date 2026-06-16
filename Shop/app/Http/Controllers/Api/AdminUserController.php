@@ -11,11 +11,11 @@ class AdminUserController extends Controller
 {
     public function index(): JsonResponse
     {
-        return response()->json([
-            'data' => User::query()
-                ->orderByDesc('created_at')
-                ->paginate(20),
-        ]);
+        $users = User::query()
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        return response()->json($users);
     }
 
     public function store(Request $request): JsonResponse
