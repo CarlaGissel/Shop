@@ -11,6 +11,7 @@ fi
 #    subproceso web, así que deben quedar en el propio archivo .env.
 set_env() {
   key="$1"; value="$2"
+  [ -z "$value" ] && return 0
   if grep -q "^${key}=" .env; then
     sed -i "s#^${key}=.*#${key}=${value}#" .env
   else
@@ -23,6 +24,12 @@ set_env DB_PORT "${DB_PORT}"
 set_env DB_DATABASE "${DB_DATABASE}"
 set_env DB_USERNAME "${DB_USERNAME}"
 set_env DB_PASSWORD "${DB_PASSWORD}"
+
+# 2b) Variables de aplicación (solo se escriben si llegan desde el entorno).
+#     Útiles en la nube (Render): APP_KEY fija, URL pública y orígenes CORS.
+set_env APP_KEY "${APP_KEY}"
+set_env APP_URL "${APP_URL}"
+set_env FRONTEND_URLS "${FRONTEND_URLS}"
 
 # 3) Generar APP_KEY solo si todavía no hay una
 if ! grep -q "^APP_KEY=base64:" .env; then
@@ -43,5 +50,5 @@ php artisan migrate --force
 php artisan db:seed --force || echo "Seed omitido: los datos de ejemplo ya existen."
 
 # 5) Levantar la API
-echo "Iniciando API en http://0.0.0.0:8000"
-exec php artisan serve --host=0.0.0.0 --port=8000
+echo "Iniciando API en http://0.0.0.0:${PORT:-8000}"
+exec php artisan serve --host=0.0.0.0 --port="${PORT:-8000}"
