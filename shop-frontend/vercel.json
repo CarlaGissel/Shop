@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://REEMPLAZAR-BACKEND.onrender.com/api/:path*"
+      "destination": "https://shop-apis-705t.onrender.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",
