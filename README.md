@@ -2,6 +2,13 @@
 
 Aplicación de e-commerce de indumentaria con catálogo, carrito, checkout, autenticación y panel de administración. El backend expone una API REST con Laravel y el frontend es una SPA hecha con React + Vite.
 
+## Despliegue en la nube
+
+La aplicación está publicada en:
+
+- **Frontend:** _pendiente de publicar_ <!-- TODO: pegar aquí la URL del despliegue (Vercel / Netlify / Render) -->
+- **Backend (API):** _pendiente de publicar_ <!-- TODO: pegar aquí la URL de la API desplegada -->
+
 ## Stack
 
 | Capa | Tecnología |
@@ -26,8 +33,11 @@ Shop/
 │   ├── Dockerfile
 │   └── nginx.conf
 ├── docker-compose.yml    # PostgreSQL + API + frontend
-├── deploy.bat            # Automatización Windows
-└── deploy.sh             # Automatización Linux/macOS
+├── deploy.bat            # Automatización de despliegue (Windows)
+├── deploy.sh             # Automatización de despliegue (Linux/macOS)
+├── backup.bat            # Backup programado de la BD (Windows)
+├── backup.sh             # Backup programado de la BD (Linux/macOS)
+└── backups/              # Dumps generados por el backup
 ```
 
 ## Requisitos
@@ -341,6 +351,97 @@ chmod +x deploy.sh
 ```
 
 Usalos solo cuando quieras guardar cambios en Git, subirlos al remoto y reconstruir Docker en una sola accion.
+
+## Automatización programada (Plan B)
+
+Como alternativa a ejecutar los scripts a mano, el proyecto incluye un script de
+**backup automático de la base de datos** pensado para correr de forma programada.
+No es interactivo, así que sirve tanto para el **Programador de tareas de Windows**
+como para **Crontab** en Linux/macOS.
+
+El script hace un `pg_dump` del contenedor `db` y lo guarda con fecha y hora en la
+carpeta `backups/`:
+
+```text
+backups/shop_AAAAMMDD_HHMMSS.sql
+```
+
+Requisito: los contenedores deben estar levantados (`docker compose up -d`).
+
+### Windows: Programador de tareas
+
+Probar el script manualmente:
+
+```bat
+backup.bat
+```
+
+Crear una tarea programada que lo ejecute todos los días a las 23:00
+(ejecutar en una consola como administrador, desde la raíz del proyecto):
+
+```bat
+schtasks /Create /SC DAILY /TN "ShopBackup" /TR "%CD%\backup.bat" /ST 23:00
+```
+
+Para ejecutarla manualmente o eliminarla:
+
+```bat
+schtasks /Run /TN "ShopBackup"
+schtasks /Delete /TN "ShopBackup" /F
+```
+
+También se puede crear desde la interfaz gráfica: **Programador de tareas → Crear
+tarea básica → Diariamente → Iniciar un programa → seleccionar `backup.bat`**.
+
+### Linux/macOS: Crontab
+
+Probar el script manualmente:
+
+```bash
+chmod +x backup.sh
+./backup.sh
+```
+
+Editar la tabla de tareas:
+
+```bash
+crontab -e
+```
+
+Agregar una línea para ejecutar el backup todos los días a las 23:00
+(reemplazar la ruta por la del proyecto):
+
+```cron
+0 23 * * * cd /ruta/al/proyecto/Shop && ./backup.sh >> backups/cron.log 2>&1
+```
+
+Verificar las tareas programadas:
+
+```bash
+crontab -l
+```
+
+> **Evidencia:** las capturas del Programador de tareas / `crontab -l` y de los
+> archivos generados en `backups/` están en la sección
+> [Capturas y evidencias](#capturas-y-evidencias).
+
+## Capturas y evidencias
+
+> Agregar aquí las capturas de pantalla como evidencia para la entrega.
+
+### Aplicación funcionando
+
+<!-- TODO: captura del frontend (catálogo, carrito o checkout) -->
+
+### Docker
+
+<!-- TODO: captura de `docker compose build` (construcción de las imágenes) -->
+<!-- TODO: captura de `docker compose ps` (contenedores en ejecución) -->
+
+### Automatización programada
+
+<!-- TODO: captura del Programador de tareas de Windows o de `crontab -l` -->
+<!-- TODO: captura de los archivos generados dentro de backups/ -->
 
 ## Solución de problemas
 
